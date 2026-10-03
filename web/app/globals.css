@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fffbeb;
+  --foreground: #1e1b4b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  /* StudioLog brand: orange action, electric purple depth, golden highlight */
+  --color-brand: #ea580c;
+  --color-brand-vivid: #f97316;
+  --color-royal: #7c3aed;
+  --color-goldsoft: #fef3c7;
+}
+
+body {
+  background: linear-gradient(180deg, #fffbeb 0%, #faf5ff 45%, #fff7ed 100%);
+  background-attachment: fixed;
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}

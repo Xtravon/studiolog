@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>StudioLog — Design System Preview (Orange + Electric Purple)</title>
+<style>
+  :root{
+    --bg:#fffbeb; --card:#ffffff; --ink:#1e1b4b; --muted:#57534e;
+    --border:#fde68a; --border-strong:#f59e0b;
+    --primary:#ea580c; --primary-vivid:#f97316; --primary-deep:#9a3412; --primary-ink:#ffffff;
+    --primary-soft:#fef3c7; --primary-soft-2:#fde68a;
+    --purple:#7c3aed; --purple-vivid:#a855f7; --purple-deep:#4c1d95; --purple-soft:#ede9fe;
+    --gold:#f59e0b; --gold-deep:#b45309;
+    --success:#15803d; --success-soft:#dcfce7; --danger:#dc2626; --danger-soft:#fee2e2;
+    --radius:16px;
+    --font:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    --shadow:0 12px 32px rgba(124,58,237,.16), 0 2px 6px rgba(234,88,12,.14);
+  }
+  *{box-sizing:border-box} body{margin:0;font-family:var(--font);color:var(--ink);
+    background:linear-gradient(180deg,#fffbeb 0%,#faf5ff 45%,#fff7ed 100%);}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
+  .hero{background:linear-gradient(120deg,var(--purple-deep) 0%,var(--purple) 45%,var(--primary-vivid) 100%);color:#fff;border-radius:22px;padding:32px;
+    display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow);border:2px solid #fff}
+  .hero small{color:#fde68a;letter-spacing:.14em;text-transform:uppercase;font-size:12px;font-weight:800}
+  .hero h1{margin:8px 0;font-size:32px;line-height:1.1} .hero h1 span{background:linear-gradient(90deg,#fde68a,#fdba74);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{margin:0;color:#f5f3ff;max-width:640px;font-size:15px}
+  .grid{display:grid;gap:16px} .g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .card{background:var(--card);border:2px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 4px;font-size:16px} .card p{margin:0;color:#44403c;font-size:14px;line-height:1.55}
+  h2.sec{margin:38px 0 6px;font-size:22px} h2.sec span.pu{color:var(--purple)} p.lead{color:#57534e;margin:0 0 14px;font-size:15px}
+  .swatches{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .sw{border:2px solid var(--border);border-radius:14px;overflow:hidden;background:#fff;box-shadow:var(--shadow)}
+  .sw div.c{height:70px} .sw div.t{padding:8px 10px;font-size:12.5px} .sw code{color:#78716c;font-size:11.5px}
+  .type{background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:11px 18px;font-weight:800;font-size:14px;border:2px solid transparent;cursor:pointer;box-shadow:0 4px 14px rgba(124,58,237,.20)}
+  .btn-p{background:linear-gradient(180deg,var(--primary-vivid),var(--primary));color:#fff;border-color:var(--primary-deep)}
+  .btn-pu{background:linear-gradient(180deg,var(--purple-vivid),var(--purple));color:#fff;border-color:var(--purple-deep)}
+  .btn-gold{background:linear-gradient(180deg,#fde68a,#fbbf24);color:#451a03;border-color:#d97706}
+  .btn-s{background:var(--purple-deep);color:#fde68a} .btn-o{background:#fff;border-color:var(--purple);color:var(--purple-deep)}
+  .btn-g{background:var(--primary-soft);color:#7c2d12;border-color:var(--primary-soft-2)} .btn-d{background:#dc2626;color:#fff}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  label.f{display:grid;gap:6px;font-size:13px;font-weight:700}
+  input,select,textarea{font:inherit;padding:11px 13px;border:2px solid var(--border);border-radius:12px;background:#fffbf0;width:100%;color:var(--ink)}
+  input:focus,select:focus,textarea:focus{outline:3px solid var(--purple-soft);border-color:var(--purple)}
+  .badge{display:inline-flex;align-items:center;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:800;border:2px solid}
+  .b-gold{background:linear-gradient(180deg,#fef3c7,#fde68a);border-color:#f59e0b;color:#78350f}
+  .b-org{background:#ffedd5;border-color:#fb923c;color:#9a3412}
+  .b-pu{background:var(--purple-soft);border-color:var(--purple-vivid);color:var(--purple-deep)}
+  .b-dark{background:var(--purple-deep);border-color:var(--purple-deep);color:#fde68a}
+  .b-s{background:var(--success-soft);border-color:#22c55e;color:#14532d} .b-d{background:var(--danger-soft);border-color:#f87171;color:#7f1d1d}
+  .b-m{background:#fff;border-color:var(--border);color:#57534e}
+  .primary-flag{border:3px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(120deg,var(--purple),var(--primary-vivid),#f59e0b) border-box;box-shadow:0 14px 36px rgba(249,115,22,.30)}
+  .price{background:linear-gradient(160deg,var(--purple-deep),var(--purple) 55%,var(--primary) 130%);color:#fff;border-radius:var(--radius);padding:20px;border:2px solid #fde68a;box-shadow:var(--shadow)}
+  .price table{width:100%;border-collapse:collapse;font-size:14px} .price td{padding:6px 0;color:#ede9fe}
+  .price td:last-child{text-align:right;font-weight:700;color:#fff} .price tr.total td{color:#fde68a;font-weight:800;font-size:18px;border-top:2px solid #f59e0b}
+  .timeline{list-style:none;margin:0;padding:0} .timeline li{display:flex;gap:12px;padding:10px 0;border-left:3px solid #ddd6fe;margin-left:8px;padding-left:18px;position:relative}
+  .timeline li::before{content:"";width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid #d6d3d1;position:absolute;left:-8.5px;top:14px}
+  .timeline li.done::before{background:var(--purple);border-color:var(--purple-deep)} .timeline li.now::before{background:var(--primary-vivid);border-color:var(--primary-deep);box-shadow:0 0 0 5px #ffedd5}
+  .timeline b{font-size:14px} .timeline span{display:block;color:#57534e;font-size:12.5px}
+  .note{font-size:12.5px;color:#78716c}
+  .banner{background:linear-gradient(90deg,var(--purple-soft),#fef3c7);border:2px solid var(--purple);border-radius:14px;padding:12px 16px;font-weight:700;color:var(--purple-deep)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <small>StudioLog · Orange + Electric Purple v0.3</small>
+      <h1>Vivid orange actions, <span>electric purple</span> depth</h1>
+      <p>Primary-vivid is now orange (#f97316 → #ea580c). Electric purple (#7c3aed) powers brand depth, admin surfaces, and focus states. Golden primary-soft kept for highlights.</p>
+    </div>
+    <div class="row"><span class="badge b-gold">Customer</span><span class="badge b-dark">Admin · Sales Rep</span><span class="badge b-dark">Admin · Operations</span></div>
+  </div>
+
+  <div class="banner" style="margin-top:16px">⚡ Electric purple #7c3aed · Primary-vivid orange #f97316 · Primary-soft golden #fef3c7 — all three live together: purple = brand, orange = action, gold = highlight.</div>
+
+  <h2 class="sec">1 · <span class="pu">Color tokens</span></h2>
+  <p class="lead">Orange leads actions, purple leads brand, gold softens.</p>
+  <div class="swatches">
+    <div class="sw"><div class="c" style="background:linear-gradient(180deg,#f97316,#ea580c)"></div><div class="t"><b>Primary vivid · ORANGE</b><br><code>#f97316 → #ea580c</code></div></div>
+    <div class="sw"><div class="c" style="background:linear-gradient(180deg,#a855f7,#7c3aed)"></div><div class="t"><b>Electric purple</b><br><code>#a855f7 → #7c3aed</code></div></div>
+    <div class="sw"><div class="c" style="background:linear-gradient(180deg,#fef3c7,#fde68a)"></div><div class="t"><b>Primary-soft · GOLDEN</b><br><code>#fef3c7 / #fde68a</code></div></div>
+    <div class="sw"><div class="c" style="background:#4c1d95"></div><div class="t"><b>Purple deep (ink)</b><br><code>#4c1d95 on gold</code></div></div>
+    <div class="sw"><div class="c" style="background:#15803d"></div><div class="t"><b>Success</b><br><code>#15803d</code></div></div>
+    <div class="sw"><div class="c" style="background:#dc2626"></div><div class="t"><b>Danger</b><br><code>#dc2626</code></div></div>
+  </div>
+
+  <h2 class="sec">2 · Typography</h2>
+  <div class="type">
+    <div style="font-size:30px;font-weight:800">Shipment plan — <span style="color:#7c3aed">Lagos</span> to <span style="color:#ea580c">Abuja</span></div>
+    <div style="font-size:20px;font-weight:700;margin-top:6px">Confirm details before payment</div>
+    <div style="font-size:15px;font-weight:700;margin-top:6px;color:#ea580c">Handled by LAS Transport Limited ★</div>
+    <p style="color:#44403c">Body · Purple headings, orange money/action words, gold highlights. Dark purple-ink on warm surfaces for contrast.</p>
+    <p class="note">Mono · <code>charge = max(minimum, base_fee + per_km_rate × distance_km)</code></p>
+  </div>
+
+  <h2 class="sec">3 · Buttons</h2>
+  <div class="card"><div class="row">
+    <button class="btn btn-p">Approve plan</button><button class="btn btn-gold">Pay now ★</button>
+    <button class="btn btn-pu">Consult sales rep ⚡</button><button class="btn btn-o">Request correction</button>
+    <button class="btn btn-g">Cancel</button><button class="btn btn-d">Report issue</button>
+  </div><p class="note" style="margin-top:10px">Orange = primary action · Purple = brand/consultation · Gold = money/primary CTA.</p></div>
+
+  <h2 class="sec">4 · Form controls</h2>
+  <div class="grid g2">
+    <div class="card"><label class="f">Goods description<input value="40 cartons of studio equipment" /></label><br><label class="f">Quantity / weight<input value="40 cartons · 850 kg" /></label></div>
+    <div class="card"><label class="f">Consultation mode<select><option>Phone call</option><option selected>Video (Meet/Jitsi link)</option></select></label><br><label class="f">Note for sales rep<textarea rows="2">Need help confirming handling needs.</textarea></label></div>
+  </div>
+
+  <h2 class="sec">5 · Status badges</h2>
+  <div class="card"><div class="row">
+    <span class="badge b-pu">Booking confirmed</span><span class="badge b-pu">Pickup scheduled</span>
+    <span class="badge b-gold">Collected by LAS ★</span><span class="badge b-org">In transit</span>
+    <span class="badge b-m">Near destination</span><span class="badge b-m">Delivered</span>
+    <span class="badge b-s">Completed</span><span class="badge b-d">Action required</span>
+  </div></div>
+
+  <h2 class="sec">6 · Domain cards</h2>
+  <div class="grid g2">
+    <div class="card primary-flag"><span class="badge b-gold">★ PRIMARY · HANDLES GOODS</span><h3 style="margin-top:8px">LAS Transport Limited</h3><p>Purple-orange-gold gradient border, golden glow. Seeded and locked as primary — loudest card on the page.</p><div class="row" style="margin-top:10px"><button class="btn btn-p">Select LAS</button><button class="btn btn-pu">Compare ⚡</button></div></div>
+    <div class="card"><span class="badge b-m">ADMIN OPTION</span><h3 style="margin-top:8px">Partner Logistics Co.</h3><p>Added by General Admin. Quiet card so LAS always wins the eye.</p><div class="row" style="margin-top:10px"><button class="btn btn-o">Select</button></div></div>
+  </div>
+
+  <h2 class="sec">7 · Shipment plan + tracking</h2>
+  <div class="grid g2">
+    <div class="price"><span class="badge b-gold">PENDING APPROVAL · v2</span>
+      <table style="margin-top:10px"><tr><td>Service</td><td>Interstate freight</td></tr>
+      <tr><td>Handler</td><td>LAS Transport Limited ★</td></tr><tr><td>Distance</td><td>740 km</td></tr>
+      <tr><td>Transport charge</td><td>₦148,000</td></tr><tr><td>Handling</td><td>₦12,000</td></tr>
+      <tr class="total"><td>Total</td><td>₦160,000</td></tr></table>
+      <div class="row" style="margin-top:12px"><button class="btn btn-gold">Approve &amp; pay ★</button><button class="btn btn-pu">Ask sales rep ⚡</button></div>
+    </div>
+    <div class="card"><h3>Tracking timeline</h3><ul class="timeline" style="margin-top:8px">
+      <li class="done"><div><b>Booking confirmed</b><span>Payment received · receipt #SL-1042</span></div></li>
+      <li class="done"><div><b>Pickup scheduled</b><span>Tomorrow, 9:00–12:00 · Lagos warehouse</span></div></li>
+      <li class="now"><div><b>Goods collected by LAS ★</b><span>In transit to Abuja · 740 km · ETA Friday</span></div></li>
+      <li><div><b>Near destination</b><span>Pending</span></div></li>
+      <li><div><b>Delivered / Completed</b><span>Pending</span></div></li>
+    </ul></div>
+  </div>
+  <p class="note" style="margin-top:24px">Tokens → Tailwind: --primary #ea580c, --primary-vivid #f97316 (orange), --purple #7c3aed electric, --primary-soft golden #fef3c7/#fde68a. shadcn/ui Button/Card/Badge/Input/Select/Dialog/Toast.</p>
+</div>
+</body>
+</html>

@@ -38,13 +38,17 @@ Zero monthly cost. Everything below is free/open-source or free-tier with no sub
 - `TrackingEvent(id, shipment_id, milestone, message_plain, action_required, created_by, created_at)`
 - `Notification(id, user_id, type, body, sent_at)`
 
-## Phase 0 — Foundation
+## Phase 0 — Foundation — DONE (2026-10-03)
+
+App lives in `web/` (Next.js 16 App Router + TypeScript, Tailwind v4).
+DB file is `web/data/studiolog.db` (git-ignored, WAL mode). CI: `.github/workflows/ci.yml`.
 
 Goal: auth, roles, project skeleton.
 - Scaffold Next.js (TS) + Tailwind + shadcn/ui + Prisma (SQLite) + Zod; GitHub Actions CI; Vitest/Playwright smoke tests.
 - Better Auth self-hosted (free): email/password, sessions in local SQLite (Better Auth `user`/`session`/`account`/`verification` tables), `group` + `admin_role` RBAC; route guards. No paid auth provider (no Clerk/Auth0/paid SMTP — Mailpit locally, free Gmail/Brevo SMTP for real mail).
 - Seed: LAS Transport Limited (primary), one General Admin account.
 - Acceptance: can log in as customer and as each admin role; unauthorized routes blocked.
+- Verified: `npm test` 4/4, `tsc --noEmit` clean, `eslint` clean, `next build` clean, seed creates LAS + `admin@studiolog.local`, live sign-in as admin returns a session.
 
 ## Phase 1 — Service Catalog + Shipment Intake (PRD 6.1, 6.2)
 
