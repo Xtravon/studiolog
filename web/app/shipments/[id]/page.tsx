@@ -123,7 +123,7 @@ export default async function ShipmentDetailPage({
         {latestPlan && (
           <div className="mt-3">
             <PlanCard plan={{ ...latestPlan, photos: [] }} />
-            {showActions && <PlanActions planId={latestPlan.id} />}
+            {showActions && <PlanActions planId={latestPlan.id} shipmentId={shipment.id} />}
           </div>
         )}
         {staffBuilder && (

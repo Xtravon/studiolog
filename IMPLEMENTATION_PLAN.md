@@ -87,11 +87,14 @@ Goal: auth, roles, project skeleton.
 - Verified live: v1 → correction → v2 (v1 superseded) → approve v2 → approve v1 409 → staff approve 403 → customer build 403; 50 km prices ₦17,000; `npm test` 27/27, `tsc`/`eslint`/`next build` clean.
 - Fixed: POST /api/shipments omitted distanceKm/coords (found via totals equal to minimum).
 
-## Phase 5 — Payment (PRD 6.7)
+## Phase 5 — Payment (PRD 6.7) — DONE (2026-10-03)
 
 - Gate: approved plan required before pay. Success → booking confirmed. Failure → plain-language next step, retry, support contact.
 - Provider in **test mode first (free)** — Paystack/Flutterwave/Stripe; idempotent webhooks; receipts. Go-live later, transaction fees only.
 - Acceptance: no payment without approval; failed payments recoverable; double-charge prevented.
+- Shipped: test provider (success/decline simulation), deterministic providerRef per plan version, approve-before-pay gate incl. stale-approval block, booking confirmed + receipt UI.
+- Verified live: pay pending 409 → decline 402 → retry success + confirmed → double-pay 409 (no double charge); `npm test` 30/30, `tsc`/`eslint`/`next build` clean.
+- Fixed: retries returned the failed row instead of resuming it (now failed→success on same row).
 
 ## Phase 6 — Tracking + Completion/History (PRD 6.8, 6.9)
 

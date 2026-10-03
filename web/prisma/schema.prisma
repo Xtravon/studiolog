@@ -99,6 +99,7 @@ model Service {
 
 enum ShipmentStatus {
   draft
+  confirmed
 }
 
 model Shipment {
@@ -121,6 +122,7 @@ model Shipment {
   status         ShipmentStatus @default(draft)
   consultations  Consultation[]
   plans          ShipmentPlan[]
+  payments       Payment[]
   distanceKm     Float?
   pickupLat      Float?
   pickupLng      Float?
@@ -189,8 +191,29 @@ model ShipmentPlan {
   correctionNote    String     @default("")
   createdBy         String?
   createdAt         DateTime   @default(now())
+  payments          Payment[]
 
   @@unique([shipmentId, version])
+}
+
+enum PaymentStatus {
+  pending
+  success
+  failed
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  shipmentId  String
+  shipment    Shipment      @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  planId      String
+  plan        ShipmentPlan  @relation(fields: [planId], references: [id], onDelete: Cascade)
+  amount      Float
+  currency    String        @default("NGN")
+  provider    String        @default("test")
+  providerRef String        @unique
+  status      PaymentStatus @default(pending)
+  createdAt   DateTime      @default(now())
 }
 
 model Consultation {

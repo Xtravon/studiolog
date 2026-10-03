@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function PlanActions({ planId }: { planId: string }) {
+export function PlanActions({ planId, shipmentId }: { planId: string; shipmentId: string }) {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -25,7 +25,7 @@ export function PlanActions({ planId }: { planId: string }) {
         <button
           onClick={() =>
             post(`/api/plans/${planId}/approve`, {})
-              .then(() => router.push("/shipments"))
+              .then(() => router.push(`/shipments/${shipmentId}/pay`))
               .catch((e) => setMsg(e instanceof Error ? e.message : "Failed"))
           }
           className="rounded-xl bg-gradient-to-b from-orange-500 to-orange-600 px-4 py-2.5 text-sm font-extrabold text-white shadow"
