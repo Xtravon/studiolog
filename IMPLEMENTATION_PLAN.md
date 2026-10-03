@@ -2,12 +2,27 @@
 
 Source: `vondoc.md` v1.2 (Product draft). Two user groups: Customer, Admin (roles: General Admin, Sales Representative / Consultant, Operations).
 
-## Stack (confirmed)
+## Stack — free and effective (locked)
 
-- Web app + SQLite on local drive. No hosted database subscription.
-- Example: Next.js + Prisma (SQLite provider) or better-sqlite3, DB file at `./data/studiolog.db` (local drive, backed up by user). Auth: Better Auth self-hosted (free, no subscription) with email/password + sessions stored in the local SQLite DB; social login only via free OAuth keys you own (optional, Google/GitHub). Paystack/Flutterwave/Stripe (test mode first), meeting links (Google Meet/Zoom stored on consultation).
-- Phases below hold regardless of framework choice. If you later outgrow SQLite (multi-user concurrent writes), migrate the Prisma schema to Postgres with no model changes.
-- Local-drive rules: keep `data/*.db*` out of git, enable WAL mode + nightly file backup, store photo uploads in `./data/uploads/` (also git-ignored).
+Zero monthly cost. Everything below is free/open-source or free-tier with no subscription. Local-first; migratable to hosted later without data-model changes.
+
+| Layer | Choice (free) | Why effective | Replaces (paid) |
+|---|---|---|---|
+| App framework | Next.js App Router + TypeScript (open source) | One codebase for UI + API routes; huge ecosystem | Paid app builders, separate backend hosting |
+| Database | SQLite file on local drive via Prisma ORM, `./data/studiolog.db`, WAL mode | Zero-cost, zero-admin, works offline; Prisma migrates to Postgres later unchanged | Neon/Supabase/PlanetScale subscriptions |
+| Auth | Better Auth self-hosted (open source), email/password, sessions in local SQLite (`user`/`session`/`account`/`verification`) | Full control, no per-user fees | Clerk/Auth0/Stytch |
+| UI | Tailwind CSS + shadcn/ui (open source) | Fast, accessible components you own | Paid UI kits/templates |
+| Validation | Zod (open source) | Shared client/server schemas, fewer bugs | — |
+| Email/notifications | In-app notifications first; email via Nodemailer + your own free SMTP (Gmail free / Brevo free 300/day); Mailpit for local dev | No mail subscription; verification/booking/milestone mails work free | Resend/SendGrid paid tiers |
+| File uploads | Local filesystem `./data/uploads/` + Sharp for resize/compress (open source) | No S3/CDN bill at v1; photos stay on your drive | AWS S3/Cloudinary |
+| Distance/pricing | v1: manual km entry by sales rep + haversine fallback; geocode via free Nominatim (OpenStreetMap, no key) with DB caching | No maps bill; formula `charge = max(minimum, base_fee + per_km_rate × distance_km)` stays stable | Google Maps Distance Matrix |
+| Consultation meetings | Phone call or free video link (Google Meet free / Jitsi free URL stored on consultation) + built-in slot logic | No scheduling subscription | Calendly/Cal.com hosted paid |
+| Payments (test first) | Paystack/Flutterwave/Stripe in **test mode** (free) with idempotent webhooks | Build/verify the approve→pay gate for free; go-live later (pay-per-transaction only, no monthly fee) | Paid billing platforms |
+| Analytics | Own `events` table + minimal admin dashboard (open source) | Every PRD §9 metric measurable with no tracker bill | PostHog/Mixpanel paid |
+| Tests/quality | Vitest + Playwright + ESLint/Prettier (open source), GitHub Actions free minutes | Catches RBAC/pricing regressions free | Paid QA/SaaS CI |
+| Hosting (dev) | Local `npm run dev` on your drive | Free; production free-tier (Vercel/Render) only when you decide | Paid hosting now |
+
+- Local-drive rules: git-ignore `data/*.db*`, `data/uploads/`; nightly file copy backup; keep the live DB outside OneDrive sync while the app runs (OneDrive locking can corrupt SQLite) — or pause sync during dev.
 
 ## Data Model (built incrementally)
 
@@ -26,15 +41,15 @@ Source: `vondoc.md` v1.2 (Product draft). Two user groups: Customer, Admin (role
 ## Phase 0 — Foundation
 
 Goal: auth, roles, project skeleton.
-- Project setup, DB migrations, CI.
-- Better Auth self-hosted (free): email/password, sessions in local SQLite (Better Auth `user`/`session`/`account`/`verification` tables), `group` + `admin_role` RBAC; route guards. No paid auth provider (no Clerk/Auth0/paid SMTP — use free local/dev mail or your own free SMTP for verification mails).
+- Scaffold Next.js (TS) + Tailwind + shadcn/ui + Prisma (SQLite) + Zod; GitHub Actions CI; Vitest/Playwright smoke tests.
+- Better Auth self-hosted (free): email/password, sessions in local SQLite (Better Auth `user`/`session`/`account`/`verification` tables), `group` + `admin_role` RBAC; route guards. No paid auth provider (no Clerk/Auth0/paid SMTP — Mailpit locally, free Gmail/Brevo SMTP for real mail).
 - Seed: LAS Transport Limited (primary), one General Admin account.
 - Acceptance: can log in as customer and as each admin role; unauthorized routes blocked.
 
 ## Phase 1 — Service Catalog + Shipment Intake (PRD 6.1, 6.2)
 
 - Browse/select services; show LAS primary + admin-added companies.
-- Goods form: description, quantity, dims/weight, photos, handling needs, pickup/delivery, timing preference.
+- Goods form: description, quantity, dims/weight, photos, handling needs, pickup/delivery, timing preference. Photos: local `./data/uploads/` + Sharp compress (free, no S3).
 - Save-and-resume drafts; edit selection before plan approval.
 - Screens: service list, service detail, company picker, shipment draft form, draft list.
 - Acceptance: draft saved, resumed, edited; LAS handler notice visible.
@@ -42,14 +57,14 @@ Goal: auth, roles, project skeleton.
 ## Phase 2 — Admin Management + Distance Pricing (PRD 6.3, 6.6)
 
 - General Admin CRUD: services, companies (LAS locked primary), `PricingConfig` (per-km rate, base fee, minimum, currency).
-- Distance: v1 haversine from geocoded addresses or manual km entry by sales rep; upgrade to Maps Distance API later.
+- Distance (free): v1 haversine + manual km override by sales rep; Nominatim (OSM, free, no key) geocoding with cached results in DB; Google Maps API only later if needed.
 - Price preview: `charge = max(minimum, base_fee + per_km_rate * distance_km)`; show distance + breakdown on plan.
 - Rule: approved plans are immutable snapshots; rate changes affect only new/pending versions.
 - Acceptance: rate change reprices drafts correctly; approved plans unchanged.
 
 ## Phase 3 — Consultation Booking (PRD 6.4)
 
-- Slots, phone/video choice, help-note, confirmation + reminders, reschedule/cancel with stated rules, callback request when no slot works.
+- Slots, phone/free-video-link choice (Google Meet free / Jitsi free URL), help-note, confirmation + reminders (in-app + free SMTP mail), reschedule/cancel with stated rules, callback request when no slot works.
 - Sales-rep view: customer service selection + shipment details before the call.
 - Endpoints: slots list, book, reschedule, cancel, callback request.
 - Acceptance: full book → confirm → remind → reschedule → cancel → callback cycle works.
@@ -63,7 +78,7 @@ Goal: auth, roles, project skeleton.
 ## Phase 5 — Payment (PRD 6.7)
 
 - Gate: approved plan required before pay. Success → booking confirmed. Failure → plain-language next step, retry, support contact.
-- Provider in test mode first; idempotent webhooks; receipts.
+- Provider in **test mode first (free)** — Paystack/Flutterwave/Stripe; idempotent webhooks; receipts. Go-live later, transaction fees only.
 - Acceptance: no payment without approval; failed payments recoverable; double-charge prevented.
 
 ## Phase 6 — Tracking + Completion/History (PRD 6.8, 6.9)
@@ -75,7 +90,7 @@ Goal: auth, roles, project skeleton.
 
 ## Phase 7 — Hardening + Success Measures (PRD 9)
 
-- Validation, audit log (who changed plan/price/status), analytics events: request completion, consult attendance, consult→approve, approve→pay, time-to-book, delivery rate, update timeliness, satisfaction, support volume by topic.
+- Validation (Zod), audit log (who changed plan/price/status), own `events` table + admin dashboard for §9 metrics (no paid analytics): request completion, consult attendance, consult→approve, approve→pay, time-to-book, delivery rate, update timeliness, satisfaction, support volume by topic.
 - UAT against customer journey §5; support flow for service choice, price, handling, tracking.
 - Acceptance: every §9 metric is measurable; core rules enforced by tests.
 
