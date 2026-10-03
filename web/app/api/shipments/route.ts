@@ -70,6 +70,11 @@ export async function POST(request: Request) {
       pickupAddr: data.pickupAddr,
       deliveryAddr: data.deliveryAddr,
       pickupTimePref: data.pickupTimePref,
+      distanceKm: data.distanceKm ?? null,
+      pickupLat: data.pickupLat ?? null,
+      pickupLng: data.pickupLng ?? null,
+      deliveryLat: data.deliveryLat ?? null,
+      deliveryLng: data.deliveryLng ?? null,
     },
     select: { id: true },
   });

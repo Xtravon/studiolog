@@ -78,11 +78,14 @@ Goal: auth, roles, project skeleton.
 - Shipped: customer book/reschedule/cancel + callback requests; staff desk (sales_rep/general) with shipment context, meeting-link save, done/no-show; terminal-state guards; RBAC tests.
 - Verified live: book video → past-time 400 → staff link → done → customer cancel after done 403 → callback 201; `npm test` 23/23, `tsc`/`eslint`/`next build` clean.
 
-## Phase 4 — Shipment Plan + Approval Versioning (PRD 6.5 + core rules)
+## Phase 4 — Shipment Plan + Approval Versioning (PRD 6.5 + core rules) — DONE (2026-10-03)
 
 - Sales rep builds versioned `ShipmentPlan`: service, company, goods, LAS-handles-goods statement, distance, charge/total, timing, conditions.
 - Customer: approve or request corrections; any detail/price change creates a new version requiring re-approval.
 - Acceptance: only one approved version payable; edits always produce a new pending version.
+- Shipped: staff plan builder (snapshot + live pricing + handling fee), customer approve/correction with latest-pending guard (409), supersede chain, full plan card UI.
+- Verified live: v1 → correction → v2 (v1 superseded) → approve v2 → approve v1 409 → staff approve 403 → customer build 403; 50 km prices ₦17,000; `npm test` 27/27, `tsc`/`eslint`/`next build` clean.
+- Fixed: POST /api/shipments omitted distanceKm/coords (found via totals equal to minimum).
 
 ## Phase 5 — Payment (PRD 6.7)
 

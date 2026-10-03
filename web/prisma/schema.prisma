@@ -120,6 +120,7 @@ model Shipment {
   pickupTimePref String         @default("")
   status         ShipmentStatus @default(draft)
   consultations  Consultation[]
+  plans          ShipmentPlan[]
   distanceKm     Float?
   pickupLat      Float?
   pickupLng      Float?
@@ -149,6 +150,47 @@ enum ConsultationStatus {
   done
   cancelled
   no_show
+}
+
+enum PlanStatus {
+  pending
+  approved
+  correction_requested
+  superseded
+}
+
+model ShipmentPlan {
+  id                String     @id @default(cuid())
+  shipmentId        String
+  shipment          Shipment   @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  version           Int
+  serviceId         String?
+  companyId         String?
+  serviceName       String     @default("")
+  companyName       String     @default("")
+  goodsDesc         String     @default("")
+  quantity          String     @default("")
+  weightKg          Float?
+  dimensions        String     @default("")
+  photos            Json       @default("[]")
+  handlingNotes     String     @default("")
+  pickupAddr        String     @default("")
+  deliveryAddr      String     @default("")
+  pickupTimePref    String     @default("")
+  handlerStatement  String     @default("Handled by LAS Transport Limited")
+  distanceKm        Float      @default(0)
+  transportCharge   Float      @default(0)
+  handlingFee       Float      @default(0)
+  totalPrice        Float      @default(0)
+  currency          String     @default("NGN")
+  timingEstimate    String     @default("")
+  conditions        String     @default("")
+  status            PlanStatus @default(pending)
+  correctionNote    String     @default("")
+  createdBy         String?
+  createdAt         DateTime   @default(now())
+
+  @@unique([shipmentId, version])
 }
 
 model Consultation {

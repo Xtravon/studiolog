@@ -2,8 +2,12 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
+import { canBuildPlan } from "@/lib/plans";
 import { canEditShipment } from "@/lib/shipments";
 import { LasNotice } from "@/components/las-notice";
+import { PlanCard } from "@/components/plan-card";
+import { PlanActions } from "@/components/plan-actions";
+import { PlanBuilder } from "@/components/plan-builder";
 import { EditShipmentForm } from "./edit-shipment-form";
 
 export default async function ShipmentDetailPage({
@@ -15,7 +19,11 @@ export default async function ShipmentDetailPage({
   if (!user) redirect("/sign-in");
   const shipment = await prisma.shipment.findUnique({
     where: { id: (await params).id },
-    include: { service: true, company: true },
+    include: {
+      service: true,
+      company: true,
+      plans: { orderBy: { version: "desc" } },
+    },
   });
   if (
     !shipment ||
@@ -39,7 +47,20 @@ export default async function ShipmentDetailPage({
     status: shipment.status,
     customerId: shipment.customerId,
   });
+  const staffBuilder = canBuildPlan(user) && shipment.status === "draft";
   const photos = Array.isArray(shipment.photos) ? (shipment.photos as string[]) : [];
+  const latestPlan = shipment.plans[0] ?? null;
+  const showActions =
+    user.group === "customer" && latestPlan?.status === "pending";
+  const [services, companies] = staffBuilder
+    ? await Promise.all([
+        prisma.service.findMany({ where: { active: true }, orderBy: { name: "asc" } }),
+        prisma.company.findMany({
+          where: { active: true },
+          orderBy: [{ isPrimary: "desc" }, { name: "asc" }],
+        }),
+      ])
+    : [[], []];
 
   return (
     <main className="mx-auto w-full max-w-3xl px-6 py-10">
@@ -91,6 +112,45 @@ export default async function ShipmentDetailPage({
           </p>
         </div>
       )}
+
+      <section className="mt-8">
+        <h2 className="text-xl font-extrabold">Shipment plan</h2>
+        {shipment.plans.length === 0 && !staffBuilder && (
+          <p className="mt-2 text-sm text-stone-600">
+            Your sales representative will prepare your plan and price after the consultation.
+          </p>
+        )}
+        {latestPlan && (
+          <div className="mt-3">
+            <PlanCard plan={{ ...latestPlan, photos: [] }} />
+            {showActions && <PlanActions planId={latestPlan.id} />}
+          </div>
+        )}
+        {staffBuilder && (
+          <PlanBuilder
+            shipmentId={shipment.id}
+            services={services}
+            companies={companies}
+            defaults={{
+              serviceId: shipment.serviceId ?? "",
+              companyId: shipment.companyId ?? "",
+              distanceKm: shipment.distanceKm?.toString() ?? "",
+            }}
+          />
+        )}
+        {shipment.plans.length > 1 && (
+          <details className="mt-4 rounded-2xl border-2 border-stone-200 bg-white p-4">
+            <summary className="cursor-pointer text-sm font-bold">
+              Earlier versions ({shipment.plans.length - 1})
+            </summary>
+            <div className="mt-3 grid gap-3">
+              {shipment.plans.slice(1).map((p) => (
+                <PlanCard key={p.id} plan={{ ...p, photos: [] }} />
+              ))}
+            </div>
+          </details>
+        )}
+      </section>
     </main>
   );
 }
