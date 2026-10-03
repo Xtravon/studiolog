@@ -71,6 +71,19 @@ async function main() {
     });
   }
   console.log(`services: seeded ${services.length}`);
+
+  await prisma.pricingConfig.upsert({
+    where: { id: "default" },
+    update: {},
+    create: {
+      id: "default",
+      perKmRate: 200,
+      baseFee: 5000,
+      minimumCharge: 10000,
+      currency: "NGN",
+    },
+  });
+  console.log("pricing: default NGN config ensured");
 }
 
 main()

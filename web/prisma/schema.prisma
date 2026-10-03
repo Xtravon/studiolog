@@ -119,6 +119,21 @@ model Shipment {
   deliveryAddr   String         @default("")
   pickupTimePref String         @default("")
   status         ShipmentStatus @default(draft)
+  distanceKm     Float?
+  pickupLat      Float?
+  pickupLng      Float?
+  deliveryLat    Float?
+  deliveryLng    Float?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+}
+
+model PricingConfig {
+  id             String   @id @default(cuid())
+  perKmRate      Float
+  baseFee        Float
+  minimumCharge  Float
+  currency       String   @default("NGN")
+  updatedBy      String?
+  updatedAt      DateTime @updatedAt
 }

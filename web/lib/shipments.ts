@@ -18,6 +18,11 @@ export const draftSchema = z.object({
   pickupAddr: z.string().max(500).default(""),
   deliveryAddr: z.string().max(500).default(""),
   pickupTimePref: z.string().max(300).default(""),
+  distanceKm: z.number().positive().max(20000).nullable().optional(),
+  pickupLat: z.number().min(-90).max(90).nullable().optional(),
+  pickupLng: z.number().min(-180).max(180).nullable().optional(),
+  deliveryLat: z.number().min(-90).max(90).nullable().optional(),
+  deliveryLng: z.number().min(-180).max(180).nullable().optional(),
 });
 
 export type DraftInput = z.infer<typeof draftSchema>;

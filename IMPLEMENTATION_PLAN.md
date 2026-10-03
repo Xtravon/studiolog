@@ -59,13 +59,15 @@ Goal: auth, roles, project skeleton.
 - Acceptance: draft saved, resumed, edited; LAS handler notice visible.
 - Verified live: customer sign-up → create draft → PATCH → list/get; photo upload + serve 200; intruder read 404; unauth create 401; `npm test` 10/10, `tsc`/`eslint`/`next build` clean.
 
-## Phase 2 — Admin Management + Distance Pricing (PRD 6.3, 6.6)
+## Phase 2 — Admin Management + Distance Pricing (PRD 6.3, 6.6) — DONE (2026-10-03)
 
 - General Admin CRUD: services, companies (LAS locked primary), `PricingConfig` (per-km rate, base fee, minimum, currency).
 - Distance (free): v1 haversine + manual km override by sales rep; Nominatim (OSM, free, no key) geocoding with cached results in DB; Google Maps API only later if needed.
 - Price preview: `charge = max(minimum, base_fee + per_km_rate * distance_km)`; show distance + breakdown on plan.
 - Rule: approved plans are immutable snapshots; rate changes affect only new/pending versions.
 - Acceptance: rate change reprices drafts correctly; approved plans unchanged.
+- Verified live: pricing GET/PATCH (250/km recorded with updatedBy), quote 100 km → ₦30,000; customer blocked from /api/admin/* (403); LAS deactivation blocked (400); `npm test` 16/16, `tsc`/`eslint`/`next build` clean.
+- Note: dev-server 404s/stale writes seen twice were corrupt `.next/dev` cache (OneDrive slow FS); fix was `Remove-Item .next` + rebuild. Clear `.next` if routes misbehave.
 
 ## Phase 3 — Consultation Booking (PRD 6.4)
 
