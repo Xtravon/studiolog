@@ -7,6 +7,8 @@ import { MAX_PHOTOS } from "./shipments";
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
 export function uploadsDir(): string {
+  const override = process.env.UPLOADS_DIR?.trim();
+  if (override) return override;
   return path.join(process.cwd(), "data", "uploads");
 }
 

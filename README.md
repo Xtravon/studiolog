@@ -6,8 +6,9 @@ LAS Transport Limited. Plan: `IMPLEMENTATION_PLAN.md`.
 
 ## Layout
 
-- `web/` — Next.js 16 app (TypeScript, Tailwind v4). SQLite lives at `web/data/studiolog.db`
-  (git-ignored, local drive only). Run all commands from `web/`.
+- `web/` — Next.js 16 app (TypeScript, Tailwind v4). SQLite lives **outside OneDrive** at
+  `%LOCALAPPDATA%/studiolog/data/studiolog.db` (see `web/.env`; git-ignored, local drive only).
+  Run all commands from `web/`.
 - `vondoc.md` — product requirements. `IMPLEMENTATION_PLAN.md` — phased build plan.
 - `DESIGN_SYSTEM_PREVIEW.html` — bright golden design-system mock.
 
@@ -44,4 +45,5 @@ callback) → sales builds plan on `/shipments/[id]` → customer approves → `
 - Auth: Better Auth self-hosted, sessions in SQLite. No paid providers.
 - Pricing: `charge = max(minimum, base_fee + per_km_rate × distance_km)`, directed at `/admin/pricing`.
 - Payments are test-mode; wire Paystack/Flutterwave/Stripe webhooks into `POST /api/payments` to go live.
-- Keep the live DB outside OneDrive sync while the app runs (SQLite + live sync can lock).
+- Keep the live DB outside OneDrive sync while the app runs — done by default via
+  `DATABASE_URL`/`UPLOADS_DIR` in `web/.env` pointing at `%LOCALAPPDATA%/studiolog/data`.
