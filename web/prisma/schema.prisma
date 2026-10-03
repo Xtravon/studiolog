@@ -100,6 +100,13 @@ model Service {
 enum ShipmentStatus {
   draft
   confirmed
+  pickup_scheduled
+  collected
+  in_transit
+  near_destination
+  delivered
+  completed
+  cancelled
 }
 
 model Shipment {
@@ -123,6 +130,8 @@ model Shipment {
   consultations  Consultation[]
   plans          ShipmentPlan[]
   payments       Payment[]
+  events         TrackingEvent[]
+  issues         Issue[]
   distanceKm     Float?
   pickupLat      Float?
   pickupLng      Float?
@@ -214,6 +223,32 @@ model Payment {
   providerRef String        @unique
   status      PaymentStatus @default(pending)
   createdAt   DateTime      @default(now())
+}
+
+model TrackingEvent {
+  id             String   @id @default(cuid())
+  shipmentId     String
+  shipment       Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  milestone      String
+  message        String   @default("")
+  actionRequired Boolean  @default(false)
+  createdBy      String?
+  createdAt      DateTime @default(now())
+}
+
+enum IssueStatus {
+  open
+  resolved
+}
+
+model Issue {
+  id         String      @id @default(cuid())
+  shipmentId String
+  shipment   Shipment    @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  customerId String
+  message    String
+  status     IssueStatus @default(open)
+  createdAt  DateTime    @default(now())
 }
 
 model Consultation {

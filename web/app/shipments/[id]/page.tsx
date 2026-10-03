@@ -3,8 +3,12 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { canBuildPlan } from "@/lib/plans";
+import { canTrack } from "@/lib/tracking";
 import { canEditShipment } from "@/lib/shipments";
 import { LasNotice } from "@/components/las-notice";
+import { TrackingTimeline } from "@/components/tracking-timeline";
+import { TrackingActions } from "@/components/tracking-actions";
+import { IssueBox } from "@/components/issue-box";
 import { PlanCard } from "@/components/plan-card";
 import { PlanActions } from "@/components/plan-actions";
 import { PlanBuilder } from "@/components/plan-builder";
@@ -23,6 +27,8 @@ export default async function ShipmentDetailPage({
       service: true,
       company: true,
       plans: { orderBy: { version: "desc" } },
+      events: { orderBy: { createdAt: "asc" } },
+      issues: { orderBy: { createdAt: "desc" } },
     },
   });
   if (
@@ -112,6 +118,34 @@ export default async function ShipmentDetailPage({
           </p>
         </div>
       )}
+
+      <section className="mt-8">
+        <h2 className="text-xl font-extrabold">Tracking & delivery</h2>
+        {(shipment.status === "delivered" || shipment.status === "completed") && (
+          <div className="mt-3 rounded-2xl border-2 border-green-300 bg-green-50 p-4">
+            <p className="font-extrabold text-green-900">
+              {shipment.status === "completed" ? "Completed" : "Delivered"} — {shipment.service?.name ?? "Shipment"}
+            </p>
+            <p className="mt-1 text-sm text-green-800">
+              {shipment.events.length > 0
+                ? `Last update: ${shipment.events[shipment.events.length - 1].message}`
+                : ""}
+              {" "}Find this shipment anytime in My shipments history.
+            </p>
+          </div>
+        )}
+        <TrackingTimeline status={shipment.status} events={shipment.events} />
+        {canTrack(user) && shipment.status !== "draft" && (
+          <TrackingActions shipmentId={shipment.id} status={shipment.status} />
+        )}
+        {(user.group === "customer" || canTrack(user)) && shipment.status !== "draft" && (
+          <IssueBox
+            shipmentId={shipment.id}
+            initial={shipment.issues}
+            staff={user.group === "admin"}
+          />
+        )}
+      </section>
 
       <section className="mt-8">
         <h2 className="text-xl font-extrabold">Shipment plan</h2>

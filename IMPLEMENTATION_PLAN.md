@@ -96,12 +96,14 @@ Goal: auth, roles, project skeleton.
 - Verified live: pay pending 409 → decline 402 → retry success + confirmed → double-pay 409 (no double charge); `npm test` 30/30, `tsc`/`eslint`/`next build` clean.
 - Fixed: retries returned the failed row instead of resuming it (now failed→success on same row).
 
-## Phase 6 — Tracking + Completion/History (PRD 6.8, 6.9)
+## Phase 6 — Tracking + Completion/History (PRD 6.8, 6.9) — DONE (2026-10-03)
 
 - Operations posts milestones: Booking confirmed, Pickup scheduled, Goods collected by LAS, In transit, Near destination, Delivered, Completed.
 - Customer view: current status, timeline, latest update, action-required flag; notifications on milestone/timing/action changes in plain language.
 - Completion: delivery confirmation, completion date, final details snapshot, report-issue, support contact, shipment history list.
 - Acceptance: shipment runs end-to-end with visible, timestamped updates.
+- Shipped: forward-only milestone transitions + cancel rules, plain-language defaults, action-required flags, timeline UI, issue report/resolve, delivery/completion banner, history via My shipments.
+- Verified live: skip-guard 409 → full walk confirmed→completed (6 events) → issue open→resolved; `npm test` 35/35, `tsc`/`eslint`/`next build` clean.
 
 ## Phase 7 — Hardening + Success Measures (PRD 9)
 
