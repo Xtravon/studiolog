@@ -2,10 +2,12 @@
 
 Source: `vondoc.md` v1.2 (Product draft). Two user groups: Customer, Admin (roles: General Admin, Sales Representative / Consultant, Operations).
 
-## Recommended Stack (to confirm)
+## Stack (confirmed)
 
-- Web app + Postgres. Example: Next.js + Postgres/Prisma, email/password auth, Paystack/Flutterwave/Stripe (test mode first), meeting links (Google Meet/Zoom stored on consultation).
-- Phases below hold regardless of stack choice.
+- Web app + SQLite on local drive. No hosted database subscription.
+- Example: Next.js + Prisma (SQLite provider) or better-sqlite3, DB file at `./data/studiolog.db` (local drive, backed up by user). Email/password auth, Paystack/Flutterwave/Stripe (test mode first), meeting links (Google Meet/Zoom stored on consultation).
+- Phases below hold regardless of framework choice. If you later outgrow SQLite (multi-user concurrent writes), migrate the Prisma schema to Postgres with no model changes.
+- Local-drive rules: keep `data/*.db*` out of git, enable WAL mode + nightly file backup, store photo uploads in `./data/uploads/` (also git-ignored).
 
 ## Data Model (built incrementally)
 
