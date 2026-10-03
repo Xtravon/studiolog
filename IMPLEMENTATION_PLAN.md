@@ -5,7 +5,7 @@ Source: `vondoc.md` v1.2 (Product draft). Two user groups: Customer, Admin (role
 ## Stack (confirmed)
 
 - Web app + SQLite on local drive. No hosted database subscription.
-- Example: Next.js + Prisma (SQLite provider) or better-sqlite3, DB file at `./data/studiolog.db` (local drive, backed up by user). Email/password auth, Paystack/Flutterwave/Stripe (test mode first), meeting links (Google Meet/Zoom stored on consultation).
+- Example: Next.js + Prisma (SQLite provider) or better-sqlite3, DB file at `./data/studiolog.db` (local drive, backed up by user). Auth: Better Auth self-hosted (free, no subscription) with email/password + sessions stored in the local SQLite DB; social login only via free OAuth keys you own (optional, Google/GitHub). Paystack/Flutterwave/Stripe (test mode first), meeting links (Google Meet/Zoom stored on consultation).
 - Phases below hold regardless of framework choice. If you later outgrow SQLite (multi-user concurrent writes), migrate the Prisma schema to Postgres with no model changes.
 - Local-drive rules: keep `data/*.db*` out of git, enable WAL mode + nightly file backup, store photo uploads in `./data/uploads/` (also git-ignored).
 
@@ -27,7 +27,7 @@ Source: `vondoc.md` v1.2 (Product draft). Two user groups: Customer, Admin (role
 
 Goal: auth, roles, project skeleton.
 - Project setup, DB migrations, CI.
-- Auth with `group` + `admin_role` RBAC; route guards.
+- Better Auth self-hosted (free): email/password, sessions in local SQLite (Better Auth `user`/`session`/`account`/`verification` tables), `group` + `admin_role` RBAC; route guards. No paid auth provider (no Clerk/Auth0/paid SMTP — use free local/dev mail or your own free SMTP for verification mails).
 - Seed: LAS Transport Limited (primary), one General Admin account.
 - Acceptance: can log in as customer and as each admin role; unauthorized routes blocked.
 
