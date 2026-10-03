@@ -84,6 +84,25 @@ async function main() {
     },
   });
   console.log("pricing: default NGN config ensured");
+
+  // Staff demo accounts (dev seed password; change after first sign-in).
+  const staff: { email: string; name: string; role: string }[] = [
+    { email: "sales@studiolog.local", name: "StudioLog Sales", role: "sales_rep" },
+    { email: "ops@studiolog.local", name: "StudioLog Operations", role: "operations" },
+  ];
+  for (const s of staff) {
+    const found = await prisma.user.findUnique({ where: { email: s.email } });
+    if (!found) {
+      await auth.api.signUpEmail({
+        body: { name: s.name, email: s.email, password: ADMIN_PASSWORD },
+      });
+    }
+    await prisma.user.update({
+      where: { email: s.email },
+      data: { group: "admin", adminRole: s.role, emailVerified: true },
+    });
+  }
+  console.log(`staff: ensured ${staff.length} accounts`);
 }
 
 main()

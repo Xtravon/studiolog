@@ -52,6 +52,16 @@ export default async function ShipmentDetailPage({
       <div className="mt-4">
         <LasNotice />
       </div>
+      {editable && (
+        <div className="mt-4">
+          <Link
+            href="/consultations"
+            className="inline-block rounded-xl border-2 border-violet-600 bg-white px-4 py-2.5 text-sm font-extrabold text-violet-950"
+          >
+            Book a phone / video consultation →
+          </Link>
+        </div>
+      )}
       {editable ? (
         <EditShipmentForm
           id={shipment.id}

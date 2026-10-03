@@ -69,12 +69,14 @@ Goal: auth, roles, project skeleton.
 - Verified live: pricing GET/PATCH (250/km recorded with updatedBy), quote 100 km → ₦30,000; customer blocked from /api/admin/* (403); LAS deactivation blocked (400); `npm test` 16/16, `tsc`/`eslint`/`next build` clean.
 - Note: dev-server 404s/stale writes seen twice were corrupt `.next/dev` cache (OneDrive slow FS); fix was `Remove-Item .next` + rebuild. Clear `.next` if routes misbehave.
 
-## Phase 3 — Consultation Booking (PRD 6.4)
+## Phase 3 — Consultation Booking (PRD 6.4) — DONE (2026-10-03)
 
 - Slots, phone/free-video-link choice (Google Meet free / Jitsi free URL), help-note, confirmation + reminders (in-app + free SMTP mail), reschedule/cancel with stated rules, callback request when no slot works.
 - Sales-rep view: customer service selection + shipment details before the call.
 - Endpoints: slots list, book, reschedule, cancel, callback request.
 - Acceptance: full book → confirm → remind → reschedule → cancel → callback cycle works.
+- Shipped: customer book/reschedule/cancel + callback requests; staff desk (sales_rep/general) with shipment context, meeting-link save, done/no-show; terminal-state guards; RBAC tests.
+- Verified live: book video → past-time 400 → staff link → done → customer cancel after done 403 → callback 201; `npm test` 23/23, `tsc`/`eslint`/`next build` clean.
 
 ## Phase 4 — Shipment Plan + Approval Versioning (PRD 6.5 + core rules)
 

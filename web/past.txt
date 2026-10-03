@@ -1,0 +1,1 @@
+{"error":"Invalid booking","issues":[{"code":"custom","path":["scheduledAt"],"message":"Appointment must be at least 30 minutes in the future"}]}

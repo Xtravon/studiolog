@@ -4,6 +4,7 @@ import { getSessionUser } from "@/lib/session";
 import { canManageCatalog } from "@/lib/roles";
 
 const LINKS = [
+  { href: "/admin/consultations", title: "Consultations", desc: "Sales desk: upcoming calls, links, attendance." },
   { href: "/admin/pricing", title: "Distance pricing", desc: "Per-km rate, base fee, minimum charge, currency." },
   { href: "/admin/services", title: "Services", desc: "Add services, edit details, activate or hide." },
   { href: "/admin/companies", title: "Logistics companies", desc: "Add company options. LAS stays primary." },

@@ -119,6 +119,7 @@ model Shipment {
   deliveryAddr   String         @default("")
   pickupTimePref String         @default("")
   status         ShipmentStatus @default(draft)
+  consultations  Consultation[]
   distanceKm     Float?
   pickupLat      Float?
   pickupLng      Float?
@@ -136,4 +137,32 @@ model PricingConfig {
   currency       String   @default("NGN")
   updatedBy      String?
   updatedAt      DateTime @updatedAt
+}
+
+enum ConsultationMode {
+  phone
+  video
+}
+
+enum ConsultationStatus {
+  booked
+  done
+  cancelled
+  no_show
+}
+
+model Consultation {
+  id                String             @id @default(cuid())
+  shipmentId        String
+  shipment          Shipment           @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  customerId        String
+  salesRepId        String?
+  mode              ConsultationMode   @default(phone)
+  scheduledAt       DateTime?
+  meetingLink       String             @default("")
+  note              String             @default("")
+  status            ConsultationStatus @default(booked)
+  callbackRequested Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
