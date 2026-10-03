@@ -1,1 +1,0 @@
-{"error":"Only the latest pending version can be approved"}
