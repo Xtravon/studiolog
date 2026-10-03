@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { canBuildPlan, nextVersion } from "@/lib/plans";
 import { computeCharge, haversineKm } from "@/lib/pricing";
+import { audit } from "@/lib/insights";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -157,5 +158,6 @@ export async function POST(request: Request, { params }: Ctx) {
   });
 
   // Customer check helper exported for review routes.
+  await audit(user.id, "plan.create", "Shipment", shipment.id, `v${version}`);
   return NextResponse.json({ version }, { status: 201 });
 }

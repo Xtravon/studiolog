@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { checkPayable } from "@/lib/payments";
+import { audit, trackEvent } from "@/lib/insights";
 
 const paySchema = z.object({
   planId: z.string().min(1),
@@ -79,6 +80,8 @@ export async function POST(request: Request) {
         data: { status: "confirmed" },
       }),
     ]);
+    await trackEvent("payment.succeeded", { shipmentId: plan.shipmentId, userId: user.id });
+    await audit(user.id, "payment.success", "Payment", payment.id, `${settled.currency} ${settled.amount}`);
     return NextResponse.json({ payment: settled, booking: "confirmed" });
   }
   const failed = await prisma.payment.update({

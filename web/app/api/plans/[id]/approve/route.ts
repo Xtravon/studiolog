@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { canReviewPlan, isActionable } from "@/lib/plans";
+import { audit, trackEvent } from "@/lib/insights";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -45,5 +46,7 @@ export async function POST(request: Request, { params }: Ctx) {
     data: { status: "approved" },
     select: { id: true, version: true, status: true },
   });
+  await trackEvent("plan.approved", { shipmentId: plan.shipmentId, userId: user.id });
+  await audit(user.id, "plan.approve", "ShipmentPlan", plan.id, `v${plan.version}`);
   return NextResponse.json(updated);
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { draftSchema } from "@/lib/shipments";
+import { trackEvent } from "@/lib/insights";
 
 const shipmentSelect = {
   id: true,
@@ -78,5 +79,6 @@ export async function POST(request: Request) {
     },
     select: { id: true },
   });
+  await trackEvent("shipment.created", { shipmentId: shipment.id, userId: user.id });
   return NextResponse.json({ id: shipment.id }, { status: 201 });
 }

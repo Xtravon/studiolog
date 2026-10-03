@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireGeneralAdmin } from "@/lib/admin";
+import { audit } from "@/lib/insights";
 
 const pricingSchema = z.object({
   perKmRate: z.number().nonnegative().max(1_000_000),
@@ -31,5 +32,6 @@ export async function PATCH(request: Request) {
   const pricing = await prisma.pricingConfig.create({
     data: { ...parsed.data, updatedBy: gate.user.id },
   });
+  await audit(gate.user.id, "pricing.update", "PricingConfig", pricing.id, `${parsed.data.currency} ${parsed.data.perKmRate}/km`);
   return NextResponse.json({ pricing });
 }

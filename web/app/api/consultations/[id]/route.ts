@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { canApplyAction, consultActionSchema } from "@/lib/consultations";
+import { trackEvent } from "@/lib/insights";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -62,5 +63,11 @@ export async function PATCH(request: Request, { params }: Ctx) {
     data,
     select: { id: true, status: true, scheduledAt: true },
   });
+  if (parsed.data.action === "done") {
+    await trackEvent("consultation.done", {
+      shipmentId: consultation.shipmentId,
+      userId: consultation.customerId,
+    });
+  }
   return NextResponse.json(updated);
 }

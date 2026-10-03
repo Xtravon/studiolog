@@ -5,6 +5,8 @@ import { canManageCatalog } from "@/lib/roles";
 
 const LINKS = [
   { href: "/admin/consultations", title: "Consultations", desc: "Sales desk: upcoming calls, links, attendance." },
+  { href: "/admin/insights", title: "Insights", desc: "Funnel, conversion, time-to-book, delivery rate." },
+  { href: "/admin/audit", title: "Audit log", desc: "Who changed plans, prices, payments, tracking." },
   { href: "/admin/pricing", title: "Distance pricing", desc: "Per-km rate, base fee, minimum charge, currency." },
   { href: "/admin/services", title: "Services", desc: "Add services, edit details, activate or hide." },
   { href: "/admin/companies", title: "Logistics companies", desc: "Add company options. LAS stays primary." },

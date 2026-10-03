@@ -105,11 +105,14 @@ Goal: auth, roles, project skeleton.
 - Shipped: forward-only milestone transitions + cancel rules, plain-language defaults, action-required flags, timeline UI, issue report/resolve, delivery/completion banner, history via My shipments.
 - Verified live: skip-guard 409 → full walk confirmed→completed (6 events) → issue open→resolved; `npm test` 35/35, `tsc`/`eslint`/`next build` clean.
 
-## Phase 7 — Hardening + Success Measures (PRD 9)
+## Phase 7 — Hardening + Success Measures (PRD 9) — DONE (2026-10-03)
 
 - Validation (Zod), audit log (who changed plan/price/status), own `events` table + admin dashboard for §9 metrics (no paid analytics): request completion, consult attendance, consult→approve, approve→pay, time-to-book, delivery rate, update timeliness, satisfaction, support volume by topic.
 - UAT against customer journey §5; support flow for service choice, price, handling, tracking.
 - Acceptance: every §9 metric is measurable; core rules enforced by tests.
+- Shipped: AnalyticsEvent + AuditLog models, funnel dashboard (/admin/insights: requests, conversions, avg hours to book, delivered, open issues), audit viewer (/admin/audit), customer support page (/support), root README with quickstart + demo accounts.
+- Verified live: journey events + audit rows recorded; insights renders 1 request → 100% approve→pay; sales blocked from pricing (403); `npm test` 37/37, `tsc`/`eslint`/`next build` clean.
+- Fixed: SQLite rejects Prisma Json defaults — event payload stored as String.
 
 ## Build Order and Risks
 

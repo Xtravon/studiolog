@@ -251,6 +251,25 @@ model Issue {
   createdAt  DateTime    @default(now())
 }
 
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  type       String
+  shipmentId String?
+  userId     String?
+  data       String   @default("{}")
+  createdAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    String   @default("")
+  createdAt DateTime @default(now())
+}
+
 model Consultation {
   id                String             @id @default(cuid())
   shipmentId        String

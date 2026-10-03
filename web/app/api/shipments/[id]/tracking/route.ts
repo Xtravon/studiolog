@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { allowedNext, canAdvance, canTrack, defaultMessage } from "@/lib/tracking";
+import { audit, trackEvent } from "@/lib/insights";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -74,5 +75,12 @@ export async function POST(request: Request, { params }: Ctx) {
       data: { status: milestone as never },
     }),
   ]);
+  await audit(user.id, "tracking.post", "Shipment", shipment.id, milestone);
+  if (milestone === "delivered" || milestone === "completed") {
+    await trackEvent(
+      milestone === "delivered" ? "shipment.delivered" : "shipment.completed",
+      { shipmentId: shipment.id, userId: shipment.customerId },
+    );
+  }
   return NextResponse.json({ event }, { status: 201 });
 }

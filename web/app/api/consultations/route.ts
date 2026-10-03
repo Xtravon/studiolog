@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { bookSchema } from "@/lib/consultations";
+import { trackEvent } from "@/lib/insights";
 
 const select = {
   id: true,
@@ -67,5 +68,6 @@ export async function POST(request: Request) {
     },
     select: { id: true },
   });
+  await trackEvent("consultation.booked", { shipmentId: shipment.id, userId: user.id });
   return NextResponse.json({ id: consultation.id }, { status: 201 });
 }

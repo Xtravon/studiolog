@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
 import { canReviewPlan, isActionable } from "@/lib/plans";
+import { audit } from "@/lib/insights";
 
 interface Ctx {
   params: Promise<{ id: string }>;
@@ -45,5 +46,6 @@ export async function POST(request: Request, { params }: Ctx) {
     data: { status: "correction_requested", correctionNote: parsed.data.message },
     select: { id: true, version: true, status: true },
   });
+  await audit(user.id, "plan.correction", "ShipmentPlan", plan.id, parsed.data.message.slice(0, 200));
   return NextResponse.json(updated);
 }
