@@ -50,13 +50,14 @@ Goal: auth, roles, project skeleton.
 - Acceptance: can log in as customer and as each admin role; unauthorized routes blocked.
 - Verified: `npm test` 4/4, `tsc --noEmit` clean, `eslint` clean, `next build` clean, seed creates LAS + `admin@studiolog.local`, live sign-in as admin returns a session.
 
-## Phase 1 — Service Catalog + Shipment Intake (PRD 6.1, 6.2)
+## Phase 1 — Service Catalog + Shipment Intake (PRD 6.1, 6.2) — DONE (2026-10-03)
 
 - Browse/select services; show LAS primary + admin-added companies.
 - Goods form: description, quantity, dims/weight, photos, handling needs, pickup/delivery, timing preference. Photos: local `./data/uploads/` + Sharp compress (free, no S3).
 - Save-and-resume drafts; edit selection before plan approval.
 - Screens: service list, service detail, company picker, shipment draft form, draft list.
 - Acceptance: draft saved, resumed, edited; LAS handler notice visible.
+- Verified live: customer sign-up → create draft → PATCH → list/get; photo upload + serve 200; intruder read 404; unauth create 401; `npm test` 10/10, `tsc`/`eslint`/`next build` clean.
 
 ## Phase 2 — Admin Management + Distance Pricing (PRD 6.3, 6.6)
 

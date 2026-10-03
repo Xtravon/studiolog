@@ -41,6 +41,36 @@ async function main() {
   } else {
     console.log(`admin: ${ADMIN_EMAIL} already seeded`);
   }
+
+  // Demo services for the Phase 1 catalog.
+  const services = [
+    {
+      id: "standard-road-freight",
+      name: "Standard Road Freight",
+      description: "Reliable interstate transport for boxed goods and equipment.",
+      includes: "Pickup and delivery\nCareful loading and unloading\nDelivery confirmation",
+    },
+    {
+      id: "same-city-express",
+      name: "Same-City Express",
+      description: "Fast pickup and delivery within the same city, same day.",
+      includes: "Same-day pickup\nDirect delivery\nLive status updates",
+    },
+    {
+      id: "fragile-special-handling",
+      name: "Fragile & Special Handling",
+      description: "Extra-care transport for fragile, valuable, or unusual goods.",
+      includes: "Protective packing check\nDedicated handling notes\nDelivery confirmation",
+    },
+  ];
+  for (const s of services) {
+    await prisma.service.upsert({
+      where: { id: s.id },
+      update: { name: s.name, description: s.description, includes: s.includes, active: true },
+      create: { ...s, active: true },
+    });
+  }
+  console.log(`services: seeded ${services.length}`);
 }
 
 main()

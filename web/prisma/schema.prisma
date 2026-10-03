@@ -26,6 +26,8 @@ model User {
   group     String  @default("customer")
   adminRole String?
 
+  shipments Shipment[]
+
   @@map("user")
 }
 
@@ -81,4 +83,42 @@ model Company {
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  shipments Shipment[]
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  includes    String   @default("")
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  shipments   Shipment[]
+}
+
+enum ShipmentStatus {
+  draft
+}
+
+model Shipment {
+  id             String         @id @default(cuid())
+  customerId     String
+  customer       User           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  serviceId      String?
+  service        Service?       @relation(fields: [serviceId], references: [id])
+  companyId      String?
+  company        Company?       @relation(fields: [companyId], references: [id])
+  goodsDesc      String         @default("")
+  quantity       String         @default("")
+  weightKg       Float?
+  dimensions     String         @default("")
+  photos         Json           @default("[]")
+  handlingNotes  String         @default("")
+  pickupAddr     String         @default("")
+  deliveryAddr   String         @default("")
+  pickupTimePref String         @default("")
+  status         ShipmentStatus @default(draft)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
