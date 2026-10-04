@@ -40,6 +40,12 @@ Customers sign up at `/sign-up`.
 callback) → sales builds plan on `/shipments/[id]` → customer approves → `/shipments/[id]/pay`
 (test mode) → tracking timeline → delivered/completed → history in `/shipments`, issues in `/support`.
 
+## Deploying to Netlify
+
+See `DEPLOY.md` + `netlify.toml`. Local dev stays on SQLite; production uses Neon Postgres
+(free) + Netlify Blobs. After any schema change: `npm run db:schema:pg` (regenerates the
+committed Postgres twin) — CI-style check: `npx prisma validate --schema prisma/schema.postgres.prisma`.
+
 ## Notes
 
 - Auth: Better Auth self-hosted, sessions in SQLite. No paid providers.

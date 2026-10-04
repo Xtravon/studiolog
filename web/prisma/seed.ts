@@ -5,7 +5,9 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "admin@studiolog.local";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "ChangeMe123!";
 
 async function main() {
-  await prisma.$executeRawUnsafe("PRAGMA journal_mode=WAL");
+  if (!/^postgres(ql)?:\/\//.test(process.env.DATABASE_URL ?? "")) {
+    await prisma.$executeRawUnsafe("PRAGMA journal_mode=WAL");
+  }
   // LAS Transport Limited: primary logistics company, locked as primary.
   const las = await prisma.company.upsert({
     where: { id: "las-transport-limited" },

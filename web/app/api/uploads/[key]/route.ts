@@ -1,8 +1,7 @@
-import { readFile } from "node:fs/promises";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSessionUser } from "@/lib/session";
-import { uploadPath } from "@/lib/uploads";
+import { readUpload } from "@/lib/uploads";
 
 interface Ctx {
   params: Promise<{ key: string }>;
@@ -26,12 +25,11 @@ export async function GET(_request: Request, { params }: Ctx) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
   }
-  try {
-    const bytes = await readFile(uploadPath(key));
-    return new NextResponse(new Uint8Array(bytes), {
-      headers: { "Content-Type": "image/jpeg", "Cache-Control": "private, max-age=86400" },
-    });
-  } catch {
+  const bytes = await readUpload(key);
+  if (!bytes) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+  return new NextResponse(new Uint8Array(bytes), {
+    headers: { "Content-Type": "image/jpeg", "Cache-Control": "private, max-age=86400" },
+  });
 }

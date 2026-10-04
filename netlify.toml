@@ -1,0 +1,14 @@
+# Netlify deploys the Next.js app in web/ against Neon Postgres.
+[build]
+  base = "web/"
+  command = "npm run db:schema:pg && prisma generate --schema prisma/schema.postgres.prisma && prisma db push --schema prisma/schema.postgres.prisma && npm run build"
+  publish = "web/.next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Required environment variables (Site settings → Environment variables):
+#   DATABASE_URL      Neon Postgres connection string (pooled)
+#   BETTER_AUTH_SECRET  random 32-byte hex (generate: openssl rand -hex 32)
+#   BETTER_AUTH_URL     https://<your-site>.netlify.app
+#   USE_BLOBS           true  (photo uploads → Netlify Blobs)
