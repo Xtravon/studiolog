@@ -3,14 +3,24 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import sharp from "sharp";
 import { getStore } from "@netlify/blobs";
+import { head, list, put } from "@vercel/blob";
 import { MAX_PHOTOS } from "./shipments";
 
 export const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 const STORE = "photos";
 
-/** Netlify has no persistent disk: set USE_BLOBS=true there for Netlify Blobs. */
-export function blobsEnabled(): boolean {
-  return process.env.USE_BLOBS === "true";
+export type UploadProvider = "local" | "netlify" | "vercel";
+
+/** Netlify has no persistent disk: set UPLOADS_PROVIDER=netlify there.
+ *  Vercel likewise: UPLOADS_PROVIDER=vercel (needs BLOB_READ_WRITE_TOKEN).
+ *  Local dev keeps files on disk. */
+export function uploadProvider(): UploadProvider {
+  const explicit = process.env.UPLOADS_PROVIDER?.trim();
+  if (explicit === "netlify" || explicit === "vercel" || explicit === "local") {
+    return explicit;
+  }
+  if (process.env.USE_BLOBS === "true") return "netlify";
+  return "local";
 }
 
 export function uploadsDir(): string {
@@ -32,7 +42,13 @@ export async function saveUpload(file: File): Promise<string> {
     .resize({ width: 1600, withoutEnlargement: true })
     .jpeg({ quality: 70 })
     .toBuffer();
-  if (blobsEnabled()) {
+  const provider = uploadProvider();
+  if (provider === "vercel") {
+    await put(key, new Blob([buffer], { type: "image/jpeg" }), {
+      access: "public",
+      contentType: "image/jpeg",
+    });
+  } else if (provider === "netlify") {
     await getStore(STORE).set(key, new Blob([buffer], { type: "image/jpeg" }));
   } else {
     await mkdir(uploadsDir(), { recursive: true });
@@ -41,8 +57,23 @@ export async function saveUpload(file: File): Promise<string> {
   return key;
 }
 
+async function readVercelBlob(key: string): Promise<Buffer | null> {
+  const found = await list({ prefix: key, limit: 1 });
+  const match = found.blobs.find((b) => b.pathname === key);
+  if (!match) return null;
+  const meta = await head(match.url);
+  void meta;
+  const res = await fetch(match.url);
+  if (!res.ok) return null;
+  return Buffer.from(await res.arrayBuffer());
+}
+
 export async function readUpload(key: string): Promise<Buffer | null> {
-  if (blobsEnabled()) {
+  const provider = uploadProvider();
+  if (provider === "vercel") {
+    return readVercelBlob(key);
+  }
+  if (provider === "netlify") {
     const data = await getStore(STORE).get(key, { type: "arrayBuffer" });
     if (!data) return null;
     return Buffer.from(data);
