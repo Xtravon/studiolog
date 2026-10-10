@@ -13,7 +13,7 @@
     "db:seed": "tsx --env-file=.env prisma/seed.ts",
     "db:schema:pg": "node prisma/twin-pg.mjs",
     "db:push:pg": "npm run db:schema:pg && prisma db push --schema prisma/schema.postgres.prisma",
-    "db:seed:pg": "tsx --env-file=.env.pg prisma/seed.ts"
+    "db:seed:pg": "prisma generate --schema prisma/schema.postgres.prisma && tsx --env-file=.env.pg prisma/seed.ts && prisma generate"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.3",
