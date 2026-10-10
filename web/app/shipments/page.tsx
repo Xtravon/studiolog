@@ -6,17 +6,7 @@ import { getSessionUser } from "@/lib/session";
 export default async function ShipmentsPage() {
   const user = await getSessionUser();
   if (!user) redirect("/sign-in");
-  if (user.group !== "customer") {
-    return (
-      <main className="mx-auto w-full max-w-3xl px-6 py-10">
-        <h1 className="text-2xl font-extrabold">My shipments</h1>
-        <p className="mt-2 text-sm text-stone-600">
-          Shipment requests belong to customers. You are signed in as an admin
-          ({user.adminRole}).
-        </p>
-      </main>
-    );
-  }
+  if (user.group !== "customer") redirect("/admin/shipments");
   const shipments = await prisma.shipment.findMany({
     where: { customerId: user.id },
     orderBy: { updatedAt: "desc" },

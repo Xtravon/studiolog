@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { PwaHomeRedirect } from "@/components/pwa-home-redirect";
 
 export default function Home() {
   return (
     <div className="flex min-h-full flex-1 flex-col items-center px-6 py-16">
+      <PwaHomeRedirect />
       <main className="w-full max-w-2xl rounded-3xl border-2 border-white bg-white/80 p-8 shadow-xl sm:p-12">
         <p className="text-xs font-extrabold uppercase tracking-widest text-violet-800">
           StudioLog · Phase 0
