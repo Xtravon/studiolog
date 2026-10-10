@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignUpPage() {
@@ -65,7 +66,12 @@ export default function SignUpPage() {
         </label>
         {error && (
           <p role="alert" className="text-sm font-semibold text-red-700">
-            {error}
+            {error}{" "}
+            {error.toLowerCase().includes("already exists") && (
+              <Link href="/sign-in" className="underline">
+                Sign in instead
+              </Link>
+            )}
           </p>
         )}
         <button
@@ -76,6 +82,12 @@ export default function SignUpPage() {
           {busy ? "Creating…" : "Sign up"}
         </button>
       </form>
+      <p className="mt-4 text-sm text-stone-600">
+        Already have an account?{" "}
+        <Link href="/sign-in" className="font-bold text-violet-800 underline">
+          Sign in
+        </Link>
+      </p>
     </main>
   );
 }
