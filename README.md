@@ -46,6 +46,13 @@ See `DEPLOY.md` + `netlify.toml`. Local dev stays on SQLite; production uses Neo
 (free) + Netlify Blobs. After any schema change: `npm run db:schema:pg` (regenerates the
 committed Postgres twin) — CI-style check: `npx prisma validate --schema prisma/schema.postgres.prisma`.
 
+## PWA (installable app)
+
+StudioLog is installable: web manifest (`web/app/manifest.ts`), brand icons
+(`web/public/icons/`, regenerate with `node web/scripts/make-icons.mjs`), a minimal service
+worker (`web/public/sw.js`, registered in the layout) with an offline fallback page (`/offline`).
+Navigations work offline from cache; `/api/*` is always network-only so auth and data stay fresh.
+
 ## Notes
 
 - Auth: Better Auth self-hosted, sessions in SQLite. No paid providers.

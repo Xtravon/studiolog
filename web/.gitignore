@@ -38,6 +38,9 @@ yarn-error.log*
 data/
 app/generated/
 
+# netlify packaging output (recreated by deploys)
+.netlify/
+
 # vercel
 .vercel
 

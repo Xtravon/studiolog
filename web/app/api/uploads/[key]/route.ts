@@ -18,10 +18,15 @@ export async function GET(_request: Request, { params }: Ctx) {
   }
   if (user.group !== "admin") {
     // Confirm one of this customer's shipments references the key.
-    const refs = await prisma.$queryRaw<{ n: number }[]>`
-      SELECT COUNT(*) AS n FROM Shipment
-      WHERE customerId = ${user.id} AND photos LIKE ${`%"${key}"%`}`;
-    if (!refs[0]?.n) {
+    // Checked in JS (not SQL) so it works on both SQLite and Postgres JSON.
+    const mine = await prisma.shipment.findMany({
+      where: { customerId: user.id },
+      select: { photos: true },
+    });
+    const owns = mine.some(
+      (s) => Array.isArray(s.photos) && (s.photos as string[]).includes(key),
+    );
+    if (!owns) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
   }
