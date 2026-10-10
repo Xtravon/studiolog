@@ -1,0 +1,8 @@
+# Never upload local secrets or the local database to Vercel.
+.env
+.env.pg
+data/
+*.db*
+*.db-journal
+*.db-wal
+.next/
