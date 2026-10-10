@@ -5,3 +5,8 @@ node_modules/
 # Local env (never commit secrets)
 .env
 .env.local
+# TWA signing + build output (local only — back up the keystore + password!)
+twa/*
+!twa/twa-manifest.json
+twa-keystore-password.txt
+*.keystore
