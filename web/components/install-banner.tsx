@@ -47,7 +47,6 @@ export function InstallBanner() {
       const n = Number(localStorage.getItem(COUNT_KEY) ?? 0) + 1;
       // Cancel log: how many times this device dismissed the banner.
       localStorage.setItem(COUNT_KEY, String(n));
-      // eslint-disable-next-line no-console
       console.info(`[install-banner] dismissed ${n}/${MAX_DISMISSALS}`);
       if (n >= MAX_DISMISSALS) localStorage.setItem(DONE_KEY, "done");
     } catch {
